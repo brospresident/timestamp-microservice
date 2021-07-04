@@ -1,39 +1,39 @@
 function httpGetResponseFromDate(req, res) {
-    let date = undefined;
+    const request = req.params.date;
 
-    if (req.params.date.includes('-')) 
-        date = new Date(req.params.date)
-    else 
-        date = new Date(+req.params.date);
+    const isNumber = Number(request) === +request;
 
-    if (date.toString() === 'Invalid Date') {
-        return res.status(400).json({
-            error: 'Invalid Date'
+    if (!request) {
+        const date = Date.now();
+        let final = new Date(date);
+        return res.status(200).json({
+            unix: final.getTime(),
+            utc: final.toUTCString()
         });
     }
-
-    let unixFormat = date.valueOf();
-    let utcFormat = `${date.toUTCString()}`
-
-    return res.status(200).json({
-        unix: unixFormat,
-        utc: utcFormat
-    });
-}
-
-function httpGetEmptyParameter(req, res) {
-    let date = new Date();
-
-    let unixFormat = date.valueOf();
-    let utcFormat = `${date.toUTCString()}`
-
-    return res.status(200).json({
-        unix: unixFormat,
-        utc: utcFormat
-    });
+    else if (isNumber) {
+        const date = new Date(+request);
+        return res.status(200).json({
+            unix: date.getTime(),
+            utc: date.toUTCString()
+        });
+    }
+    else if (!isNumber) {
+        if (new Date(request).toString() === 'Invalid Date') {
+            return res.status(400).json({
+                error: 'Invalid Date'
+            });
+        }
+        else {
+            const date = new Date(request);
+            return res.status(200).json({
+                unix: date.getTime(),
+                utc: date.toUTCString()
+            });
+        }
+    }
 }
 
 module.exports = {
-    httpGetResponseFromDate,
-    httpGetEmptyParameter
+    httpGetResponseFromDate
 }

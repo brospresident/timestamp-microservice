@@ -1,10 +1,9 @@
 const express = require('express');
 
-const { httpGetResponseFromDate, httpGetEmptyParameter } = require('./api.controller')
+const { httpGetResponseFromDate } = require('./api.controller')
 
 const apiRouter = express.Router();
 
-apiRouter.get('/:date', httpGetResponseFromDate);
-apiRouter.get('/', httpGetEmptyParameter);
+apiRouter.get('/:date?', httpGetResponseFromDate);
 
 module.exports = apiRouter;
